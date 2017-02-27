@@ -1,0 +1,23 @@
+{
+  "name": "spinder",
+  "version": "1.0.0",
+  "description": "Spin to match with hot russian singles in your area!",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/FuadBalashov/Spinder.git"
+  },
+  "keywords": [
+    "spinder",
+    "demo"
+  ],
+  "author": "Fuad Balashov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FuadBalashov/Spinder/issues"
+  },
+  "homepage": "https://github.com/FuadBalashov/Spinder#readme"
+}
