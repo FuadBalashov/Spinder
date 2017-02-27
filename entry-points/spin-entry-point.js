@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
-import { Text, View, } from 'react-native';
+import { Text, View, Image, Header } from 'react-native';
 import { MD5 } from 'HashFunctions';
 import { ProfileData } from 'ProfileData';
 import Spinner from './components/Spinner.js';
 
 
-class SpinderUi extends Component { {
+const SpinderUi = React.createClass({
 
-  RetrieveMatchDisplay(matchUserName, previousHits) {
-    const matchId = MD5(matchUserName)};
+  getInitialState: function () {
+    return ({
+      currentMatch: undefined,
+      openMessenger: false,
+      initialLoad: true
+    });
+  },
+
+  retrieveMatchDisplay(matchUserName, previousHits) {
+    const matchId = MD5(matchUserName);
     const { fullName, picture, blurb } = ProfileData.retrieve(matchId);
 
-    const profileImage = <Image source={picture} altText={fullName + ' Awesome Picture'}/>;
-
+    const profileImage = <Image source={picture} altText={fullName + '\'s Awesome Picture'}/>;
     if (previousHits) {
       return (
         <View style={{highlight: 'faded'}}>
@@ -21,7 +28,7 @@ class SpinderUi extends Component { {
             {`${fullName} maybe didn't spin before`}
           </Text>
           <Text style={{text: 'hope'}}>
-            {'But they say it takes' + {previousHits + 1} + 'tries to find love!'}
+            {'But they say it takes ' + {previousHits + 1} + ' tries to find love!'}
           </Text>
         </View>
       );
@@ -37,7 +44,7 @@ class SpinderUi extends Component { {
     }
   },
 
-  GenerateMatch(prefTimeOfDay, age, region) {
+  generateMatch(prefTimeOfDay, age, region) {
     const matchList = ProfileData.getPreviousMatches(this.props.userName);
     const regionalUsers = ProfileData.filterUsers({region: region, age: age});
 
@@ -61,13 +68,55 @@ class SpinderUi extends Component { {
     return ProfileData.botUser;
   },
 
-  onSpinEvent(event) {
-    /* TODO */
+  onSpinEvent(matchLevel) {
+    const { prefTimeOfDay, age, region } = this.props;
+    const currentMatch = this.state.currentMatch;
+    const recipientResponce = ProfileData.sendMatchLevel(this.props.username, currentMatch, matchLevel);
+
+    if (recipientResponce) {
+      this.setState({openMessenger: true});
+    } else {
+      /* If current match has not yet responded, move on to the next match */
+      this.setState({currentMatch: generateMatch(prefTimeOfDay, age, region)});
+    }
+  },
+
+  closeMessenger() {
+    this.setState({
+      openMessenger: false
+    });
   },
 
   render() {
-    /* TODO */
+    if (initialLoad) {
+      return (
+        <View>
+          <Header>
+            Wave Your Phone Around If You Are Looking For Love!
+            <Spinner mode='initial' beginMatching={this.onSpinEvent}/>
+          </Header>
+        </View>
+      )
+    }
+    if (openMessenger) {
+      return (
+        <View>
+          <Messenger user={this.props.username} close={this.closeMessenger}>
+            <Header>
+              {`Talk to ${this.state.currentMatch.prefferedName}!`}
+            </Header>
+          </Messenger>
+        </View>
+      )
+    } else {
+      return (
+        <View>
+          {this.state.currentMatch ? this.retrieveMatchDisplay(currentMatch.userName, currentMatch.previousHits) : undefined}
+          <Spinner mode='picker' triggerMatch={this.onSpinEvent}/>
+        </View>
+      )
+    }
   }
-}
+});
 
 AppRegistry.registerComponent('SpinderUi', () => SpinderUi);
