@@ -9,16 +9,16 @@ class SpinderUi extends Component { {
 
   RetrieveMatchDisplay(matchUserName, previousHits) {
     const matchId = MD5(matchUserName)};
-    const { firstName, lastName, picture, blurb } = ProfileData.retrieve(matchId);
+    const { fullName, picture, blurb } = ProfileData.retrieve(matchId);
 
-    const profileImage = <Image source={picture} altText={firstName + ' ' + lastName + ' Awesome Picture'}/>;
+    const profileImage = <Image source={picture} altText={fullName + ' Awesome Picture'}/>;
 
     if (previousHits) {
       return (
         <View style={{highlight: 'faded'}}>
           {profileImage}
           <Text style={{text: 'dispair'}}>
-            {`${firstName} ${lastName} maybe didn't spin before`}
+            {`${fullName} maybe didn't spin before`}
           </Text>
           <Text style={{text: 'hope'}}>
             {'But they say it takes' + {previousHits + 1} + 'tries to find love!'}
@@ -30,7 +30,7 @@ class SpinderUi extends Component { {
         <View style={{highlight: 'love'}}>
           {profileImage}
           <Text style={{text: 'excite'}}>
-            {`LOOK! IT'S ${firstName} ${lastName}. Could be the one!`}
+            {`LOOK! IT'S ${fullName}. Could be the one!`}
           </Text>
         </View>
       );
